@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: local-postgres-isolated
+    environment:
+      POSTGRES_USER: db_admin
+      POSTGRES_PASSWORD: production_dev_password
+      POSTGRES_DB: enterprise_db
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - isolated-data-tier
+
+  cache:
+    image: redis:7-alpine
+    container_name: local-redis-isolated
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - isolated-data-tier
+
+networks:
+  isolated-data-tier:
+    driver: bridge
+
+volumes:
+  pgdata:
